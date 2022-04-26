@@ -1,10 +1,11 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
+import Clerk from '@clerk/clerk-sdk-node/dist/Clerk';
+import { PrismaClient } from '@prisma/client';
 
 import labRouter from './routes/lab-router';
 import userRouter from './routes/user-router';
-import Clerk from '@clerk/clerk-sdk-node/dist/Clerk';
-import { PrismaClient } from '@prisma/client';
 
 dotenv.config({ path: '.env' });
 
@@ -14,6 +15,11 @@ prisma.$connect();
 
 const app = express();
 
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+  })
+);
 app.use(clerk.expressWithAuth());
 app.use(labRouter);
 app.use(userRouter);
