@@ -32,7 +32,7 @@ To be able to execute API server successfully you need to have clerk application
 
 #### MONGO_DB
 
-- after you successfully create project in the mongodb-atlas you will go to the **DATABASE ACCESS** and create user under your name with password which you will need to copy. Then you will click on the **DATABASE** and then you will have there button connect go through this wizard and at the end you should see url like this **mongodb+srv://<username>:<password>@<db-url>/<db-name>?retryWrites=true&w=majority**. Instead of username use your actual name of user you created together with the password you copied
+- after you successfully create project in the mongodb-atlas you will go to the **DATABASE ACCESS** and create user under your name with password which you will need to copy. Then you will click on the **DATABASE** and then you will have there button connect go through this wizard and at the end you should see url like this **mongodb+srv://\<username>:<password>@<db-url>/<db-name>?retryWrites=true&w=majority**. Instead of username use your actual name of user you created together with the password you copied
 
 #### SVIX_SECRET
 
