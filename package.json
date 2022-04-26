@@ -4,7 +4,8 @@
   "description": "API application for Book and Study web app",
   "main": "./src/index.ts",
   "scripts": {
-    "dev": "nodemon ./src/index.ts"
+    "dev": "nodemon ./src/index.ts",
+    "generate": "prisma generate --schema=./src/prisma/schema.prisma"
   },
   "repository": "https://github.com/MarcoMruz/book-and-study-api.git",
   "author": "Marco Mrúz <marcomruz1@gmail.com>",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.15",
+    "prisma": "^3.12.0",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.3"
   }

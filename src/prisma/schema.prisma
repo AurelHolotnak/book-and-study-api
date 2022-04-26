@@ -1,4 +1,48 @@
 datasource db {
   provider = "mongodb"
-  url      = env("DATABASE_URL")
+  url      = env("MONGODB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Reservation {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  email           String
+  reservationDate DateTime
+  duration        Int
+  roomId          String   @db.ObjectId
+  room            Room     @relation(fields: [roomId], references: [id])
+  userId          String   @db.ObjectId
+  user            User     @relation(fields: [userId], references: [id])
+  createdAt       DateTime @default(now())
+}
+
+model Room {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  labNumber    Int
+  labName      String
+  labCapacity  Int
+  labLocation  String
+  labStatus    String
+  reservations Reservation[]
+  userId       String        @db.ObjectId
+  owner        User          @relation(fields: [userId], references: [id])
+  createdAt    DateTime      @default(now())
+}
+
+model User {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  titleBefore  String
+  titleAfter   String
+  name         String
+  email        String
+  phoneNumber  String?
+  ownedRooms   Room[]
+  isTeacher    Boolean
+  reservations Reservation[]
+  isicCardId   String?
+  createdAt    DateTime      @default(now())
 }
