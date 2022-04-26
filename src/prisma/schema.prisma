@@ -8,19 +8,19 @@ generator client {
 }
 
 model Reservation {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
-  name            String
-  email           String
-  reservationDate DateTime
-  duration        Int
-  roomId          String   @db.ObjectId
-  room            Room     @relation(fields: [roomId], references: [id])
-  userId          String   @db.ObjectId
-  user            User     @relation(fields: [userId], references: [id])
-  createdAt       DateTime @default(now())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String
+  startTime DateTime
+  endTime   DateTime
+  labId     String   @db.ObjectId
+  lab       Lab      @relation(fields: [labId], references: [id])
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
 }
 
-model Room {
+model Lab {
   id           String        @id @default(auto()) @map("_id") @db.ObjectId
   labNumber    Int
   labName      String
@@ -40,7 +40,7 @@ model User {
   titleAfter   String?
   name         String
   email        String        @unique
-  ownedRooms   Room[]
+  ownedLabs    Lab[]
   isTeacher    Boolean       @default(false)
   reservations Reservation[]
   isicCardId   String?

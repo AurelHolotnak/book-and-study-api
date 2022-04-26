@@ -4,7 +4,7 @@ import express, { Request, Response } from 'express';
 import { Webhook } from 'svix';
 import { prisma } from '..';
 import { ClerkUser } from '../types/types.helpers';
-import { isAuthenticated } from '../utils/auth';
+import { isAuthenticated } from '../middleware/auth';
 
 const router = express.Router();
 
