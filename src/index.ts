@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 
-import reservationRouter from './routes/reservation-router';
+import labRouter from './routes/lab-router';
 import userRouter from './routes/user-router';
 import Clerk from '@clerk/clerk-sdk-node/dist/Clerk';
 import { PrismaClient } from '@prisma/client';
@@ -15,7 +15,7 @@ prisma.$connect();
 const app = express();
 
 app.use(clerk.expressWithAuth());
-app.use(reservationRouter);
+app.use(labRouter);
 app.use(userRouter);
 
 app.listen(4000, () => {
