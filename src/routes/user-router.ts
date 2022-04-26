@@ -1,9 +1,10 @@
 import { WithAuthProp } from '@clerk/clerk-sdk-node';
 import bodyParser from 'body-parser';
-import express, { Request } from 'express';
+import express, { Request, Response } from 'express';
 import { Webhook } from 'svix';
 import { prisma } from '..';
 import { ClerkUser } from '../types/types.helpers';
+import { isAuthenticated } from '../utils/auth';
 
 const router = express.Router();
 
@@ -51,6 +52,67 @@ router.post(
   }
 );
 
-router.get('');
+router.post(
+  '/profile/me/edit',
+  // @ts-ignore - express-clerk doesn't have a type for this
+  isAuthenticated,
+  async (req: WithAuthProp<Request>, res: Response) => {
+    const clerkId = req.auth.userId!;
+    const input = req.body;
+
+    try {
+      await prisma.user.update({
+        where: {
+          clerkId,
+        },
+        data: {
+          name: input.name,
+          isicCardId: input.isicCardId,
+          titleBefore: input.titleBefore,
+          titleAfter: input.titleAfter,
+        },
+      });
+
+      return res.status(200).json({
+        message: 'Successfully updated user profile',
+      });
+    } catch (error: any) {
+      return res.status(400).json({
+        error: error.message,
+      });
+    }
+  }
+);
+
+router.get(
+  '/profile/me',
+  // @ts-ignore - express-clerk doesn't have a type for this
+  isAuthenticated,
+  async (req: WithAuthProp<Request>, res: Response) => {
+    const clerkId = req.auth.userId!;
+
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          clerkId,
+        },
+      });
+
+      if (!user) {
+        return res.status(400).json({
+          error: 'User not found',
+        });
+      }
+
+      return res.status(200).json({
+        user,
+      });
+    } catch (error: any) {
+      return res.status(400).json({
+        error: error.message,
+      });
+    }
+  }
+);
 
 export default router;
