@@ -35,14 +35,15 @@ model Room {
 
 model User {
   id           String        @id @default(auto()) @map("_id") @db.ObjectId
-  titleBefore  String
-  titleAfter   String
+  clerkId      String
+  titleBefore  String?
+  titleAfter   String?
   name         String
   email        String
-  phoneNumber  String?
   ownedRooms   Room[]
-  isTeacher    Boolean
+  isTeacher    Boolean       @default(false)
   reservations Reservation[]
   isicCardId   String?
+  profileImage String?
   createdAt    DateTime      @default(now())
 }
