@@ -8,12 +8,13 @@ import { PrismaClient } from '@prisma/client';
 
 dotenv.config({ path: '.env' });
 
+export const clerk = new Clerk({ apiKey: process.env.CLERK_API_KEY });
 export const prisma = new PrismaClient();
 prisma.$connect();
 
-export const clerk = new Clerk({ apiKey: process.env.CLERK_API_KEY });
 const app = express();
 
+app.use(clerk.expressWithAuth());
 app.use(reservationRouter);
 app.use(userRouter);
 

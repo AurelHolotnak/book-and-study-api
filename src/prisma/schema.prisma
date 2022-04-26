@@ -35,11 +35,11 @@ model Room {
 
 model User {
   id           String        @id @default(auto()) @map("_id") @db.ObjectId
-  clerkId      String
+  clerkId      String        @unique
   titleBefore  String?
   titleAfter   String?
   name         String
-  email        String
+  email        String        @unique
   ownedRooms   Room[]
   isTeacher    Boolean       @default(false)
   reservations Reservation[]
