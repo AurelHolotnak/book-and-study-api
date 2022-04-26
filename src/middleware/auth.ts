@@ -40,3 +40,57 @@ export async function isTeacher(
     return next(error);
   }
 }
+
+export async function isReservationOwner(
+  req: WithAuthProp<Request>,
+  _res: Response,
+  next: NextFunction
+) {
+  const clerkId = req.auth.userId;
+  const reservationId = req.params.reservationId;
+
+  try {
+    const uid = await convertClerkIdToDbId(clerkId);
+
+    const reservation = await prisma.reservation.findUnique({
+      where: {
+        id: reservationId,
+      },
+    });
+
+    if (!reservation?.userId || reservation.userId !== uid) {
+      throw new Error('User is not the reservation owner');
+    }
+
+    return next();
+  } catch (error) {
+    return next(error);
+  }
+}
+
+export async function isLabOwner(
+  req: WithAuthProp<Request>,
+  _res: Response,
+  next: NextFunction
+) {
+  const clerkId = req.auth.userId;
+  const labId = req.params.labId;
+
+  try {
+    const uid = await convertClerkIdToDbId(clerkId);
+
+    const lab = await prisma.lab.findUnique({
+      where: {
+        id: labId,
+      },
+    });
+
+    if (!lab?.userId || lab.userId !== uid) {
+      throw new Error('User is not the lab owner');
+    }
+
+    return next();
+  } catch (error) {
+    return next(error);
+  }
+}

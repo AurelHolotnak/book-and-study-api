@@ -1,7 +1,7 @@
 import { WithAuthProp } from '@clerk/clerk-sdk-node';
 import express, { Request, Response } from 'express';
 import { prisma } from '..';
-import { isAuthenticated } from '../middleware/auth';
+import { isAuthenticated, isReservationOwner } from '../middleware/auth';
 import { convertClerkIdToDbId } from '../utils/auth';
 import { isLabFree } from '../utils/db';
 
@@ -68,7 +68,7 @@ router.post(
 
       const userId = await convertClerkIdToDbId(clerkId);
 
-      const reservation = await prisma.reservation.create({
+      await prisma.reservation.create({
         data: {
           labId,
           userId,
@@ -94,6 +94,7 @@ router.post(
   '/cancel-reservation/:reservationId',
   // @ts-ignore - express-clerk doesn't have a type for this
   isAuthenticated,
+  isReservationOwner,
   async (req: WithAuthProp<Request>, res: Response) => {
     const reservationId = req.params.reservationId;
     const clerkId = req.auth.userId!;
