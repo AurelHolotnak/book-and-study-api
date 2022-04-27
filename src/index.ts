@@ -18,6 +18,7 @@ const app = express();
 app.use(
   cors({
     origin: 'http://localhost:3000',
+    credentials: true,
   })
 );
 app.use(express.json());
@@ -25,6 +26,6 @@ app.use(clerk.expressWithAuth());
 app.use(labRouter);
 app.use(userRouter);
 
-app.listen(4000, () => {
+app.listen(4001, () => {
   console.log('Server started on port 4000');
 });
