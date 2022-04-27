@@ -22,7 +22,7 @@ model Reservation {
 
 model Lab {
   id             String        @id @default(auto()) @map("_id") @db.ObjectId
-  labNumber      String
+  labNumber      String        @unique
   labName        String
   labDescription String
   labCapacity    Int
