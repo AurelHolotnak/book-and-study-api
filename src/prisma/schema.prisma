@@ -21,29 +21,31 @@ model Reservation {
 }
 
 model Lab {
-  id           String        @id @default(auto()) @map("_id") @db.ObjectId
-  labNumber    Int
-  labName      String
-  labCapacity  Int
-  labLocation  String
-  labStatus    String
-  reservations Reservation[]
-  userId       String        @db.ObjectId
-  owner        User          @relation(fields: [userId], references: [id])
-  createdAt    DateTime      @default(now())
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  labNumber      String
+  labName        String
+  labDescription String
+  labCapacity    Int
+  building       String
+  floor          Int
+  reservations   Reservation[]
+  userId         String        @db.ObjectId
+  owner          User          @relation(fields: [userId], references: [id])
+  createdAt      DateTime      @default(now())
 }
 
 model User {
-  id           String        @id @default(auto()) @map("_id") @db.ObjectId
-  clerkId      String        @unique
-  titleBefore  String?
-  titleAfter   String?
-  name         String
-  email        String        @unique
-  ownedLabs    Lab[]
-  isTeacher    Boolean       @default(false)
-  reservations Reservation[]
-  isicCardId   String?
-  profileImage String?
-  createdAt    DateTime      @default(now())
+  id               String        @id @default(auto()) @map("_id") @db.ObjectId
+  clerkId          String        @unique
+  titleBefore      String?
+  titleAfter       String?
+  name             String
+  email            String        @unique
+  ownedLabs        Lab[]
+  isTeacher        Boolean       @default(false)
+  teachingSubjects String[]
+  reservations     Reservation[]
+  isicCardId       String?
+  profileImage     String?
+  createdAt        DateTime      @default(now())
 }

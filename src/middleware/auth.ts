@@ -17,7 +17,7 @@ export function isAuthenticated(
 
 export async function isTeacher(
   req: WithAuthProp<Request>,
-  _res: Response,
+  res: Response,
   next: NextFunction
 ) {
   const clerkId = req.auth.userId;
@@ -36,14 +36,14 @@ export async function isTeacher(
     }
 
     return next();
-  } catch (error) {
-    return next(error);
+  } catch (error: any) {
+    return res.status(400).send(error.message);
   }
 }
 
 export async function isReservationOwner(
   req: WithAuthProp<Request>,
-  _res: Response,
+  res: Response,
   next: NextFunction
 ) {
   const clerkId = req.auth.userId;
@@ -63,14 +63,14 @@ export async function isReservationOwner(
     }
 
     return next();
-  } catch (error) {
-    return next(error);
+  } catch (error: any) {
+    return res.status(400).send(error.message);
   }
 }
 
 export async function isLabOwner(
   req: WithAuthProp<Request>,
-  _res: Response,
+  res: Response,
   next: NextFunction
 ) {
   const clerkId = req.auth.userId;
@@ -90,7 +90,7 @@ export async function isLabOwner(
     }
 
     return next();
-  } catch (error) {
-    return next(error);
+  } catch (error: any) {
+    return res.status(400).send(error.message);
   }
 }

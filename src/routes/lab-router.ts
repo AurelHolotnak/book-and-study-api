@@ -1,7 +1,12 @@
 import { WithAuthProp } from '@clerk/clerk-sdk-node';
 import express, { Request, Response } from 'express';
 import { prisma } from '..';
-import { isAuthenticated, isReservationOwner } from '../middleware/auth';
+import {
+  isAuthenticated,
+  isLabOwner,
+  isReservationOwner,
+  isTeacher,
+} from '../middleware/auth';
 import { convertClerkIdToDbId } from '../utils/auth';
 import { isLabFree } from '../utils/db';
 
@@ -120,6 +125,142 @@ router.post(
 
       return res.status(200).json({
         message: 'Successfully cancelled reservation',
+      });
+    } catch (error: any) {
+      return res.status(400).json({
+        error: error.message,
+      });
+    }
+  }
+);
+
+router.post(
+  '/free-labs',
+  // @ts-ignore - express-clerk doesn't have a type for this
+  // isAuthenticated,
+  async (req: Request, res: Response) => {
+    try {
+      const { startTime, endTime } = req.body;
+      const labs = await prisma.lab.findMany();
+
+      const freeLabs = await Promise.all(
+        labs.map(async (lab) => {
+          const isFree = await isLabFree(lab.id, startTime, endTime);
+
+          return {
+            ...lab,
+            isFree,
+          };
+        })
+      );
+
+      return res.status(200).json({
+        labs: freeLabs.filter((lab) => lab.isFree),
+      });
+    } catch (error: any) {
+      return res.status(400).json({
+        error: error.message,
+      });
+    }
+  }
+);
+
+router.post(
+  '/create-lab',
+  // @ts-ignore - express-clerk doesn't have a type for this
+  isAuthenticated,
+  isTeacher,
+  async (req: WithAuthProp<Request>, res: Response) => {
+    const { labName, labCapacity, labDescription, floor, building, labNumber } =
+      req.body;
+    const clerkId = req.auth.userId!;
+
+    try {
+      const teacherId = await convertClerkIdToDbId(clerkId);
+      await prisma.lab.create({
+        data: {
+          labCapacity,
+          labDescription,
+          labName,
+          labNumber,
+          floor,
+          building,
+          userId: teacherId,
+        },
+      });
+
+      return res.status(200).json({
+        message: 'Successfully created lab',
+      });
+    } catch (error: any) {
+      return res.status(400).json({
+        error: error.message,
+      });
+    }
+  }
+);
+
+router.post(
+  '/edit-lab/:labId',
+  // @ts-ignore - express-clerk doesn't have a type for this
+  isAuthenticated,
+  isTeacher,
+  isLabOwner,
+  async (req: WithAuthProp<Request>, res: Response) => {
+    const { labName, labCapacity, labDescription, labNumber, teacherId } =
+      req.body;
+    const labId = req.params.labId;
+
+    try {
+      await prisma.lab.update({
+        where: {
+          id: labId,
+        },
+        data: {
+          labCapacity,
+          labDescription,
+          labName,
+          labNumber,
+          userId: teacherId,
+        },
+      });
+
+      return res.status(200).json({
+        message: 'Successfully edited lab',
+      });
+    } catch (error: any) {
+      return res.status(400).json({
+        error: error.message,
+      });
+    }
+  }
+);
+
+router.get(
+  '/delete-lab/:labId',
+  // @ts-ignore - express-clerk doesn't have a type for this
+  isAuthenticated,
+  isTeacher,
+  isLabOwner,
+  async (req: WithAuthProp<Request>, res: Response) => {
+    const labId = req.params.labId;
+    try {
+      const labReservations = prisma.reservation.deleteMany({
+        where: {
+          labId,
+        },
+      });
+
+      const lab = prisma.lab.delete({
+        where: {
+          id: labId,
+        },
+      });
+
+      await prisma.$transaction([labReservations, lab]);
+
+      return res.status(200).json({
+        message: 'Successfully deleted lab',
       });
     } catch (error: any) {
       return res.status(400).json({
