@@ -1,23 +1,23 @@
-import express, { Request, Response } from "express";
-import { mqttDaco as mqtt } from "../mqtt-client";
-import { prisma } from "../index";
+import express, { Request, Response } from 'express';
+import { mqttDaco as mqtt } from '../mqtt-client';
+import { prisma } from '../index';
 
 const router = express.Router();
 
-const cardAndUidMap = new Map([["0x2a44a648", "62680eefec7c8e9e7b412915"]]);
+const cardAndUidMap = new Map([['0x2a44a648', '62680eefec7c8e9e7b412915']]);
 
-mqtt.on("connect", function () {
-  mqtt.subscribe("iot/BookAndStudy/PostCred", function (err) {
+mqtt.on('connect', function () {
+  mqtt.subscribe('iot/BookAndStudy/PostCred', function (err) {
     if (!err) {
       // mqtt.publish('iot/BookAndStudy/Access', 'Hello mqtt')
-      console.log("connected to iot/BookAndStudy/PostCred");
+      console.log('connected to iot/BookAndStudy/PostCred');
     }
   });
 });
 
-mqtt.on("message", async function (topic, message) {
+mqtt.on('message', async function (topic, message) {
   // message is Buffer
-  const splitMessage = message.toString().split("/");
+  const splitMessage = message.toString().split('/');
 
   const id = cardAndUidMap.get(splitMessage[0]);
   const currentTime = new Date();
@@ -53,11 +53,11 @@ mqtt.on("message", async function (topic, message) {
     });
 
     if (reservations.length === 0 || id === undefined) {
-      mqtt.publish("iot/BookAndStudy/Access", "false");
+      mqtt.publish('iot/BookAndStudy/Access', 'false');
     } else {
-      mqtt.publish("iot/BookAndStudy/Access", "true");
+      mqtt.publish('iot/BookAndStudy/Access', 'true');
     }
-  } catch (error: any) {
+  } catch (error) {
     console.log(error.message);
   }
 });

@@ -44,7 +44,7 @@ router.post(
       });
 
       return res.status(200).send('OK');
-    } catch (error: any) {
+    } catch (error) {
       return res.status(400).json({
         error: error.message,
       });
@@ -76,7 +76,7 @@ router.post(
       return res.status(200).json({
         message: 'Successfully updated user profile',
       });
-    } catch (error: any) {
+    } catch (error) {
       return res.status(400).json({
         error: error.message,
       });
@@ -107,7 +107,7 @@ router.get(
       return res.status(200).json({
         user,
       });
-    } catch (error: any) {
+    } catch (error) {
       return res.status(400).json({
         error: error.message,
       });

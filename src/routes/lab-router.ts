@@ -33,7 +33,7 @@ router.post(
       return res.status(200).json({
         isFree,
       });
-    } catch (error: any) {
+    } catch (error) {
       return res.status(400).json({
         error: error.message,
       });
@@ -87,7 +87,7 @@ router.post(
       return res.status(200).json({
         message: `Successfully reserved lab for a ${endTime} hour/s`,
       });
-    } catch (error: any) {
+    } catch (error) {
       return res.status(400).json({
         error: error.message,
       });
@@ -118,7 +118,7 @@ router.post(
       return res.status(200).json({
         labs: freeLabs.filter((lab) => lab.isFree),
       });
-    } catch (error: any) {
+    } catch (error) {
       return res.status(400).json({
         error: error.message,
       });
@@ -153,7 +153,7 @@ router.post(
       return res.status(200).json({
         message: 'Successfully created lab',
       });
-    } catch (error: any) {
+    } catch (error) {
       return res.status(400).json({
         error: error.message,
       });
@@ -189,7 +189,7 @@ router.post(
       return res.status(200).json({
         message: 'Successfully edited lab',
       });
-    } catch (error: any) {
+    } catch (error) {
       return res.status(400).json({
         error: error.message,
       });
@@ -223,7 +223,7 @@ router.delete(
       return res.status(200).json({
         message: 'Successfully deleted lab',
       });
-    } catch (error: any) {
+    } catch (error) {
       return res.status(400).json({
         error: error.message,
       });
@@ -242,7 +242,7 @@ router.get(
       return res.status(200).json({
         labs,
       });
-    } catch (error: any) {
+    } catch (error) {
       return res.status(400).json({
         error: error.message,
       });
