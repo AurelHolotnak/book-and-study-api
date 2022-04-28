@@ -29,6 +29,7 @@ model Lab {
   building       String
   floor          Int
   reservations   Reservation[]
+  lastVisitor    User?
   createdAt      DateTime      @default(now())
 }
 
@@ -42,6 +43,8 @@ model User {
   isTeacher        Boolean       @default(false)
   teachingSubjects String[]
   reservations     Reservation[]
+  lastVisitedLabId String        @db.ObjectId @unique
+  lastVisitedLab   Lab?          @relation(fields: [lastVisitedLabId], references: [id])
   isicCardId       String?       @unique
   profileImage     String?
   createdAt        DateTime      @default(now())

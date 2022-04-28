@@ -53,6 +53,23 @@ mqtt.on('message', async function (topic, message) {
         },
       });
 
+      if (!lab) {
+        throw new Error('Lab not found');
+      }
+
+      if (user?.isTeacher) {
+        const updatedUser = prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            lastVisitedLabId: lab.id,
+          },
+        });
+        mqtt.publish(PUB_CRED_TOPIC, 'true');
+        return;
+      }
+
       const reservations = await prisma.reservation.findMany({
         where: {
           AND: [
