@@ -34,6 +34,6 @@ app.use(userRouter);
 app.use(reservationRouter);
 app.use(mqttRouter);
 
-app.listen(4001, () => {
+app.listen(process.env.PORT || 4000, () => {
   console.log('Server started on port 4000');
 });
