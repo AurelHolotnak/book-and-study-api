@@ -1,14 +1,14 @@
-import { WithAuthProp } from "@clerk/clerk-sdk-node";
-import express, { Request, Response } from "express";
-import { prisma } from "..";
-import { isAuthenticated, isTeacher } from "../middleware/auth";
-import { convertClerkIdToDbId } from "../utils/auth";
-import { isLabFree } from "../utils/db";
+import { WithAuthProp } from '@clerk/clerk-sdk-node';
+import express, { Request, Response } from 'express';
+import { prisma } from '..';
+import { isAuthenticated, isTeacher } from '../middleware/auth';
+import { convertClerkIdToDbId } from '../utils/auth';
+import { isLabFree } from '../utils/db';
 
 const router = express.Router();
 
 router.post(
-  "/is-lab-free/:labId",
+  '/is-lab-free/:labId',
   // @ts-ignore - express-clerk doesn't have a type for this
   isAuthenticated,
   async (req: WithAuthProp<Request>, res: Response) => {
@@ -21,7 +21,7 @@ router.post(
       // when user creates a reservation, we will create on reservation pre hour and then we will check if amount of free reservations is more than duration
       if (!isFree) {
         return res.status(200).json({
-          message: "Lab is not free at this time",
+          message: 'Lab is not free at this time',
         });
       }
 
@@ -37,7 +37,7 @@ router.post(
 );
 
 router.post(
-  "/reserve-lab/:labId",
+  '/reserve-lab/:labId',
   // @ts-ignore - express-clerk doesn't have a type for this
   isAuthenticated,
   async (req: WithAuthProp<Request>, res: Response) => {
@@ -54,7 +54,7 @@ router.post(
 
       if (!user) {
         return res.status(400).json({
-          error: "User not found",
+          error: 'User not found',
         });
       }
 
@@ -62,7 +62,7 @@ router.post(
 
       if (!isFree) {
         return res.status(400).json({
-          error: "Lab is not free at this time",
+          error: 'Lab is not free at this time',
         });
       }
 
@@ -91,7 +91,7 @@ router.post(
 );
 
 router.post(
-  "/free-labs",
+  '/free-labs',
   // @ts-ignore - express-clerk doesn't have a type for this
   isAuthenticated,
   async (req: Request, res: Response) => {
@@ -122,16 +122,21 @@ router.post(
 );
 
 router.post(
-  "/create-lab",
+  '/create-lab',
   // @ts-ignore - express-clerk doesn't have a type for this
   isAuthenticated,
   isTeacher,
   async (req: WithAuthProp<Request>, res: Response) => {
-    const { labName, labCapacity, labDescription, floor, building, labNumber } =
-      req.body;
-    const clerkId = req.auth.userId!;
-
     try {
+      const {
+        labName,
+        labCapacity,
+        labDescription,
+        floor,
+        building,
+        labNumber,
+      } = req.body;
+
       await prisma.lab.create({
         data: {
           labCapacity,
@@ -144,7 +149,7 @@ router.post(
       });
 
       return res.status(200).json({
-        message: "Successfully created lab",
+        message: 'Successfully created lab',
       });
     } catch (error) {
       return res.status(400).json({
@@ -155,7 +160,7 @@ router.post(
 );
 
 router.post(
-  "/edit-lab/:labId",
+  '/edit-lab/:labId',
   // @ts-ignore - express-clerk doesn't have a type for this
   isAuthenticated,
   isTeacher,
@@ -178,7 +183,7 @@ router.post(
       });
 
       return res.status(200).json({
-        message: "Successfully edited lab",
+        message: 'Successfully edited lab',
       });
     } catch (error) {
       return res.status(400).json({
@@ -189,7 +194,7 @@ router.post(
 );
 
 router.delete(
-  "/delete-lab/:labId",
+  '/delete-lab/:labId',
   // @ts-ignore - express-clerk doesn't have a type for this
   isAuthenticated,
   isTeacher,
@@ -211,7 +216,7 @@ router.delete(
       await prisma.$transaction([labReservations, lab]);
 
       return res.status(200).json({
-        message: "Successfully deleted lab",
+        message: 'Successfully deleted lab',
       });
     } catch (error) {
       return res.status(400).json({
@@ -222,7 +227,7 @@ router.delete(
 );
 
 router.get(
-  "/labs",
+  '/labs',
   // @ts-ignore - express-clerk doesn't have a type for this
   isAuthenticated,
   async (_req: WithAuthProp<Request>, res: Response) => {
@@ -231,6 +236,31 @@ router.get(
 
       return res.status(200).json({
         labs,
+      });
+    } catch (error) {
+      return res.status(400).json({
+        error: error.message,
+      });
+    }
+  }
+);
+
+router.get(
+  '/labs/:labId',
+  // @ts-ignore - express-clerk doesn't have a type for this
+  isAuthenticated,
+  async (req: WithAuthProp<Request>, res: Response) => {
+    const labId = req.params.labId;
+
+    try {
+      const lab = await prisma.lab.findUnique({
+        where: {
+          id: labId,
+        },
+      });
+
+      return res.status(200).json({
+        lab,
       });
     } catch (error) {
       return res.status(400).json({

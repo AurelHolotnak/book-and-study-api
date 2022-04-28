@@ -1,7 +1,7 @@
-import { WithAuthProp } from "@clerk/clerk-sdk-node";
-import { NextFunction, Request, Response } from "express";
-import { prisma } from "..";
-import { convertClerkIdToDbId } from "../utils/auth";
+import { WithAuthProp } from '@clerk/clerk-sdk-node';
+import { NextFunction, Request, Response } from 'express';
+import { prisma } from '..';
+import { convertClerkIdToDbId } from '../utils/auth';
 
 export function isAuthenticated(
   req: WithAuthProp<Request>,
@@ -12,7 +12,7 @@ export function isAuthenticated(
     return next();
   }
 
-  return res.status(401).send("Unauthorized");
+  return res.status(401).send('Unauthorized');
 }
 
 export async function isTeacher(
@@ -32,7 +32,7 @@ export async function isTeacher(
     });
 
     if (!user?.isTeacher) {
-      throw new Error("User is not a teacher");
+      throw new Error('User is not a teacher');
     }
 
     return next();
@@ -59,7 +59,7 @@ export async function isReservationOwner(
     });
 
     if (!reservation?.userId || reservation.userId !== uid) {
-      throw new Error("User is not the reservation owner");
+      throw new Error('User is not the reservation owner');
     }
 
     return next();
