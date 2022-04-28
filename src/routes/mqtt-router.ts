@@ -12,7 +12,7 @@ const PUB_REG_TOPIC = "iot/BookAndStudy/RegisterSub";
 
 const router = express.Router();
 
-const cardAndUidMap = new Map([["0x2a44a648", "62680eefec7c8e9e7b412915"]]);
+const cardAndUidMap = new Map([['0x2a44a648', '62680eefec7c8e9e7b412915']]);
 
 mqtt.on("connect", function () {
   // subscribe to place the isic topic
@@ -30,7 +30,7 @@ mqtt.on("connect", function () {
   });
 });
 
-mqtt.on("message", async function (topic, message) {
+mqtt.on('message', async function (topic, message) {
   // message is Buffer
   if (topic === SUB_CRED_TOPIC) {
     const splitMessage = message.toString().split("/");

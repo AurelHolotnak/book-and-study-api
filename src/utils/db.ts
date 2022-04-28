@@ -16,14 +16,28 @@ export const isLabFree = async (
             OR: [
               {
                 AND: [
-                  { startTime: { lt: startTime } },
-                  { endTime: { gt: startTime } },
+                  { startTime: { gt: startTime } },
+                  { endTime: { lt: startTime } },
                 ],
               },
               {
                 AND: [
-                  { startTime: { lt: endTime } },
+                  { startTime: { lt: startTime } },
                   { endTime: { gt: endTime } },
+                ],
+              },
+              {
+                AND: [
+                  { startTime: { lt: startTime } },
+                  { endTime: { gt: startTime } },
+                  { endTime: { lt: endTime } },
+                ],
+              },
+              {
+                AND: [
+                  { startTime: { gt: startTime } },
+                  { endTime: { gt: endTime } },
+                  { startTime: { lt: endTime } },
                 ],
               },
             ],

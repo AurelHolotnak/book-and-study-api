@@ -28,7 +28,7 @@ router.get(
       return res.status(200).json({
         reservations,
       });
-    } catch (error: any) {
+    } catch (error) {
       return res.status(400).json({
         error: error.message,
       });
@@ -67,7 +67,7 @@ router.delete(
       return res.status(200).json({
         message: 'Successfully cancelled reservation',
       });
-    } catch (error: any) {
+    } catch (error) {
       return res.status(400).json({
         error: error.message,
       });
