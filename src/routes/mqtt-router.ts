@@ -99,8 +99,8 @@ router.get(
     console.log(`ClerkId: ${clerkId}`);
 
     try {
-      mqtt.publish(PUB_REG_TOPIC, "register");
-      mqtt.on("message", async function (topic, message) {
+      await mqtt.publish(PUB_REG_TOPIC, "register");
+      await mqtt.on("message", async function (topic, message) {
         if (topic === SUB_REG_TOPIC) {
           const uid = await convertClerkIdToDbId(clerkId);
           console.log(`Message: ${message.toString()}`);
@@ -116,9 +116,9 @@ router.get(
 
           console.log(`updatedUser: ${updatedUser}`);
 
-          return res.status(200).json(true);
         }
       });
+      return res.status(200).json(true);
     } catch (error: any) {
       return res.status(200).json(false);
     }
