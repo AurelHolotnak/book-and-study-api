@@ -4,7 +4,7 @@
   "description": "API application for Book and Study web app",
   "main": "./src/index.ts",
   "scripts": {
-    "start": "concurrently \"nodemon ./src/index.ts\" \"svix listen http://localhost:4000/user-created\"",
+    "start": "ts-node src/index.ts",
     "dev": "concurrently \"nodemon ./src/index.ts\" \"svix listen http://localhost:4000/user-created\"",
     "generate": "prisma generate --schema=./src/prisma/schema.prisma"
   },
