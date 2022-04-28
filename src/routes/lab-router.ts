@@ -1,12 +1,7 @@
 import { WithAuthProp } from '@clerk/clerk-sdk-node';
 import express, { Request, Response } from 'express';
 import { prisma } from '..';
-import {
-  isAuthenticated,
-  isLabOwner,
-  isReservationOwner,
-  isTeacher,
-} from '../middleware/auth';
+import { isAuthenticated, isLabOwner, isTeacher } from '../middleware/auth';
 import { convertClerkIdToDbId } from '../utils/auth';
 import { isLabFree } from '../utils/db';
 
