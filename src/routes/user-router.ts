@@ -129,4 +129,29 @@ router.get(
   }
 );
 
+router.get(
+  "/teachers/:teacherId",
+  // @ts-ignore - express-clerk doesn't have a type for this
+  isAuthenticated,
+  async (req: WithAuthProp<Request>, res: Response) => {
+    const teacherId = req.params.teacherId;
+
+    try {
+      const teacher = await prisma.user.findUnique({
+        where: {
+          id: teacherId,
+        },
+      });
+
+      return res.status(200).json({
+        teacher,
+      });
+    } catch (error) {
+      return res.status(400).json({
+        error: error.message,
+      });
+    }
+  }
+);
+
 export default router;
