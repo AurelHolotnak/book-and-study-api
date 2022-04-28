@@ -24,12 +24,12 @@
     "express": "^4.18.0",
     "mqtt": "^4.3.7",
     "prisma": "^3.13.0",
-    "ts-node": "^10.7.0"
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.3"
   },
   "devDependencies": {
     "concurrently": "^7.1.0",
     "nodemon": "^2.0.15",
-    "svix": "^0.56.0",
-    "typescript": "^4.6.3"
+    "svix": "^0.56.0"
   }
 }
