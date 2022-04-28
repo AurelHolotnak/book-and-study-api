@@ -3,12 +3,12 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import Clerk from '@clerk/clerk-sdk-node/dist/Clerk';
 import { PrismaClient } from '@prisma/client';
-import { connect } from "mqtt"  // import connect from mqtt
+import { connect } from 'mqtt'; // import connect from mqtt
 
 import labRouter from './routes/lab-router';
 import userRouter from './routes/user-router';
-import mqttRouter from "./routes/mqtt-router";
-
+import reservationRouter from './routes/reservation-router';
+import mqttRouter from './routes/mqtt-router';
 
 dotenv.config({ path: '.env' });
 
@@ -31,10 +31,9 @@ app.use(express.json());
 app.use(clerk.expressWithAuth());
 app.use(labRouter);
 app.use(userRouter);
+app.use(reservationRouter);
 app.use(mqttRouter);
 
 app.listen(4001, () => {
   console.log('Server started on port 4000');
 });
-
-
