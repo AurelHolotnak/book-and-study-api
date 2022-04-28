@@ -1,16 +1,16 @@
-import { WithAuthProp } from '@clerk/clerk-sdk-node';
-import bodyParser from 'body-parser';
-import express, { Request, Response } from 'express';
-import { Webhook } from 'svix';
-import { prisma } from '..';
-import { ClerkUser } from '../types/types.helpers';
-import { isAuthenticated } from '../middleware/auth';
+import { WithAuthProp } from "@clerk/clerk-sdk-node";
+import bodyParser from "body-parser";
+import express, { Request, Response } from "express";
+import { Webhook } from "svix";
+import { prisma } from "..";
+import { ClerkUser } from "../types/types.helpers";
+import { isAuthenticated } from "../middleware/auth";
 
 const router = express.Router();
 
 router.post(
-  '/user-created',
-  bodyParser.raw({ type: 'application/json' }),
+  "/user-created",
+  bodyParser.raw({ type: "application/json" }),
   // @ts-ignore - express-clerk doesn't have a type for this
   async (req: WithAuthProp<Request>, res) => {
     const payload = req.body;
@@ -31,7 +31,7 @@ router.post(
       });
 
       if (user) {
-        return res.status(200).send('User already exists');
+        return res.status(200).send("User already exists");
       }
 
       await prisma.user.create({
@@ -43,7 +43,7 @@ router.post(
         },
       });
 
-      return res.status(200).send('OK');
+      return res.status(200).send("OK");
     } catch (error) {
       return res.status(400).json({
         error: error.message,
@@ -53,7 +53,7 @@ router.post(
 );
 
 router.post(
-  '/profile/me/edit',
+  "/profile/me/edit",
   // @ts-ignore - express-clerk doesn't have a type for this
   isAuthenticated,
   async (req: WithAuthProp<Request>, res: Response) => {
@@ -74,7 +74,7 @@ router.post(
       });
 
       return res.status(200).json({
-        message: 'Successfully updated user profile',
+        message: "Successfully updated user profile",
       });
     } catch (error) {
       return res.status(400).json({
@@ -85,7 +85,7 @@ router.post(
 );
 
 router.get(
-  '/profile/me',
+  "/profile/me",
   // @ts-ignore - express-clerk doesn't have a type for this
   isAuthenticated,
   async (req: WithAuthProp<Request>, res: Response) => {
@@ -100,12 +100,35 @@ router.get(
 
       if (!user) {
         return res.status(400).json({
-          error: 'User not found',
+          error: "User not found",
         });
       }
 
       return res.status(200).json({
         user,
+      });
+    } catch (error) {
+      return res.status(400).json({
+        error: error.message,
+      });
+    }
+  }
+);
+
+router.get(
+  "/teachers",
+  // @ts-ignore - express-clerk doesn't have a type for this
+  isAuthenticated,
+  async (req: WithAuthProp<Request>, res: Response) => {
+    try {
+      const teachers = await prisma.user.findMany({
+        where: {
+          isTeacher: true,
+        },
+      });
+
+      return res.status(200).json({
+        teachers,
       });
     } catch (error) {
       return res.status(400).json({
