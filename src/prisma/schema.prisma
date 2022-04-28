@@ -43,7 +43,7 @@ model User {
   isTeacher        Boolean       @default(false)
   teachingSubjects String[]
   reservations     Reservation[]
-  lastVisitedLabId String        @db.ObjectId @unique
+  lastVisitedLabId String?       @unique @db.ObjectId
   lastVisitedLab   Lab?          @relation(fields: [lastVisitedLabId], references: [id])
   isicCardId       String?       @unique
   profileImage     String?
