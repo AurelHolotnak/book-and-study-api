@@ -44,16 +44,24 @@ mqtt.on("message", async function (topic, message) {
         },
       });
 
-      if (user?.isTeacher) {
-        mqtt.publish(PUB_CRED_TOPIC, "true");
-        return;
-      }
-
       const lab = await prisma.lab.findFirst({
         where: {
           labNumber: splitMessage[1],
         },
       });
+
+      if (user?.isTeacher) {
+        const updatedUser = prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            lastVisitedLabId: lab?.id,
+          },
+        });
+        mqtt.publish(PUB_CRED_TOPIC, "true");
+        return;
+      }
 
       const reservations = await prisma.reservation.findMany({
         where: {
@@ -115,7 +123,6 @@ router.get(
           });
 
           console.log(`updatedUser: ${updatedUser}`);
-
         }
       });
       return res.status(200).json(true);
