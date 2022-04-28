@@ -137,7 +137,7 @@ router.post(
 router.post(
   '/free-labs',
   // @ts-ignore - express-clerk doesn't have a type for this
-  // isAuthenticated,
+  isAuthenticated,
   async (req: Request, res: Response) => {
     try {
       const { startTime, endTime } = req.body;
@@ -261,6 +261,25 @@ router.get(
 
       return res.status(200).json({
         message: 'Successfully deleted lab',
+      });
+    } catch (error: any) {
+      return res.status(400).json({
+        error: error.message,
+      });
+    }
+  }
+);
+
+router.get(
+  '/labs',
+  // @ts-ignore - express-clerk doesn't have a type for this
+  isAuthenticated,
+  async (_req: WithAuthProp<Request>, res: Response) => {
+    try {
+      const labs = await prisma.lab.findMany();
+
+      return res.status(200).json({
+        labs,
       });
     } catch (error: any) {
       return res.status(400).json({

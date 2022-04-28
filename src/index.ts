@@ -6,6 +6,7 @@ import { PrismaClient } from '@prisma/client';
 
 import labRouter from './routes/lab-router';
 import userRouter from './routes/user-router';
+import reservationRouter from './routes/reservation-router';
 
 dotenv.config({ path: '.env' });
 
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use(clerk.expressWithAuth());
 app.use(labRouter);
 app.use(userRouter);
+app.use(reservationRouter);
 
 app.listen(4001, () => {
   console.log('Server started on port 4000');
