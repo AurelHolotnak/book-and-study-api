@@ -46,7 +46,7 @@ router.post(
   // @ts-ignore - express-clerk doesn't have a type for this
   isAuthenticated,
   async (req: WithAuthProp<Request>, res: Response) => {
-    const { startTime, endTime, reservationName, email } = req.body;
+    const { startTime, endTime, name, email } = req.body;
     const labId = req.params.labId;
     const clerkId = req.auth.userId!;
 
@@ -77,7 +77,7 @@ router.post(
         data: {
           labId,
           userId,
-          name: reservationName,
+          name,
           startTime,
           endTime,
           email,
@@ -86,45 +86,6 @@ router.post(
 
       return res.status(200).json({
         message: `Successfully reserved lab for a ${endTime} hour/s`,
-      });
-    } catch (error: any) {
-      return res.status(400).json({
-        error: error.message,
-      });
-    }
-  }
-);
-
-router.post(
-  '/cancel-reservation/:reservationId',
-  // @ts-ignore - express-clerk doesn't have a type for this
-  isAuthenticated,
-  isReservationOwner,
-  async (req: WithAuthProp<Request>, res: Response) => {
-    const reservationId = req.params.reservationId;
-    const clerkId = req.auth.userId!;
-
-    try {
-      const user = await prisma.user.findUnique({
-        where: {
-          clerkId,
-        },
-      });
-
-      if (!user) {
-        return res.status(400).json({
-          error: 'User not found',
-        });
-      }
-
-      await prisma.reservation.delete({
-        where: {
-          id: reservationId,
-        },
-      });
-
-      return res.status(200).json({
-        message: 'Successfully cancelled reservation',
       });
     } catch (error: any) {
       return res.status(400).json({
@@ -236,7 +197,7 @@ router.post(
   }
 );
 
-router.get(
+router.delete(
   '/delete-lab/:labId',
   // @ts-ignore - express-clerk doesn't have a type for this
   isAuthenticated,
@@ -276,7 +237,7 @@ router.get(
   isAuthenticated,
   async (_req: WithAuthProp<Request>, res: Response) => {
     try {
-      const labs = await prisma.lab.findMany();
+      const labs = await prisma.lab.findMany({ include: { owner: true } });
 
       return res.status(200).json({
         labs,
