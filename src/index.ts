@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import Clerk from '@clerk/clerk-sdk-node/dist/Clerk';
 import { PrismaClient } from '@prisma/client';
-import { connect } from 'mqtt'; // import connect from mqtt
 
 import labRouter from './routes/lab-router';
 import userRouter from './routes/user-router';

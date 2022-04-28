@@ -29,8 +29,6 @@ model Lab {
   building       String
   floor          Int
   reservations   Reservation[]
-  userId         String        @db.ObjectId
-  owner          User          @relation(fields: [userId], references: [id])
   createdAt      DateTime      @default(now())
 }
 
@@ -41,7 +39,6 @@ model User {
   titleAfter       String?
   name             String
   email            String        @unique
-  ownedLabs        Lab[]
   isTeacher        Boolean       @default(false)
   teachingSubjects String[]
   reservations     Reservation[]

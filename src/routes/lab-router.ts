@@ -1,7 +1,7 @@
 import { WithAuthProp } from '@clerk/clerk-sdk-node';
 import express, { Request, Response } from 'express';
 import { prisma } from '..';
-import { isAuthenticated, isLabOwner, isTeacher } from '../middleware/auth';
+import { isAuthenticated, isTeacher } from '../middleware/auth';
 import { convertClerkIdToDbId } from '../utils/auth';
 import { isLabFree } from '../utils/db';
 
@@ -127,12 +127,16 @@ router.post(
   isAuthenticated,
   isTeacher,
   async (req: WithAuthProp<Request>, res: Response) => {
-    const { labName, labCapacity, labDescription, floor, building, labNumber } =
-      req.body;
-    const clerkId = req.auth.userId!;
-
     try {
-      const teacherId = await convertClerkIdToDbId(clerkId);
+      const {
+        labName,
+        labCapacity,
+        labDescription,
+        floor,
+        building,
+        labNumber,
+      } = req.body;
+
       await prisma.lab.create({
         data: {
           labCapacity,
@@ -141,7 +145,6 @@ router.post(
           labNumber,
           floor,
           building,
-          userId: teacherId,
         },
       });
 
@@ -161,7 +164,6 @@ router.post(
   // @ts-ignore - express-clerk doesn't have a type for this
   isAuthenticated,
   isTeacher,
-  isLabOwner,
   async (req: WithAuthProp<Request>, res: Response) => {
     const { labName, labCapacity, labDescription, labNumber, teacherId } =
       req.body;
@@ -177,7 +179,6 @@ router.post(
           labDescription,
           labName,
           labNumber,
-          userId: teacherId,
         },
       });
 
@@ -197,7 +198,6 @@ router.delete(
   // @ts-ignore - express-clerk doesn't have a type for this
   isAuthenticated,
   isTeacher,
-  isLabOwner,
   async (req: WithAuthProp<Request>, res: Response) => {
     const labId = req.params.labId;
     try {
@@ -232,10 +232,35 @@ router.get(
   isAuthenticated,
   async (_req: WithAuthProp<Request>, res: Response) => {
     try {
-      const labs = await prisma.lab.findMany({ include: { owner: true } });
+      const labs = await prisma.lab.findMany();
 
       return res.status(200).json({
         labs,
+      });
+    } catch (error) {
+      return res.status(400).json({
+        error: error.message,
+      });
+    }
+  }
+);
+
+router.get(
+  '/labs/:labId',
+  // @ts-ignore - express-clerk doesn't have a type for this
+  isAuthenticated,
+  async (req: WithAuthProp<Request>, res: Response) => {
+    const labId = req.params.labId;
+
+    try {
+      const lab = await prisma.lab.findUnique({
+        where: {
+          id: labId,
+        },
+      });
+
+      return res.status(200).json({
+        lab,
       });
     } catch (error) {
       return res.status(400).json({
