@@ -45,7 +45,7 @@ model User {
   isTeacher        Boolean       @default(false)
   teachingSubjects String[]
   reservations     Reservation[]
-  isicCardId       String?
+  isicCardId       String?       @unique
   profileImage     String?
   createdAt        DateTime      @default(now())
 }
